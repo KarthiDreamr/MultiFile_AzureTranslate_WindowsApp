@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BOSCH-KCT-StringTranslator (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "BOSCH-KCT-StringTranslator (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
