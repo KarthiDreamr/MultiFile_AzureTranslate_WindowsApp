@@ -7,8 +7,299 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Viewbox>
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
-    </StackPanel>
+        <Grid Height="Auto" Width="Auto">
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Border x:Name="AppHeader" Background="#BA2E2467" Height="245" Width="1920" VerticalAlignment="Top" Grid.Row="0" Grid.ColumnSpan="2" >
+                <!--               <TextBlock x:Name="AppHeaderText" FontSize="40" Text="Translate UWP Application" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>             -->
+                <Image x:Name="AppHeaderImage" Source="ms-appx:///Assets/translator_utility_icon.png" Margin="1,1,1,1"/>
+            </Border>
+
+            <ComboBox x:Name="SourceComboBox" Height="61" Width="334" Margin="40,125,0,0" CornerRadius="20,20,20,20" Grid.Row="1" Grid.Column="0">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+               <!-- <ComboBoxItem Content="AutoDetect" Tag="" IsSelected="True"/> -->
+                <ComboBoxItem Content="English" Tag="EN"  IsSelected="True"/>
+                <ComboBoxItem Content="German" Tag="DE"/>
+                <ComboBoxItem Content="French" Tag="FR"/>
+                <ComboBoxItem Content="Italian" Tag="it-IT"/>
+                <ComboBoxItem Content="Afrikaans" Tag="af-ZA"/>
+                <ComboBoxItem Content="Albanian" Tag="sq-AL"/>
+                <ComboBoxItem Content="Amharic" Tag="am-ET"/>
+                <ComboBoxItem Content="Arabic" Tag="ar-AR"/>
+                <ComboBoxItem Content="Armenian" Tag="hy-AM"/>
+                <ComboBoxItem Content="Assamese" Tag="as-IN"/>
+                <ComboBoxItem Content="Azerbaijani" Tag="az-AZ"/>
+                <ComboBoxItem Content="Bangla" Tag="bn-BD"/>
+                <ComboBoxItem Content="Bashkir" Tag="ba-RU"/>
+                <ComboBoxItem Content="Basque" Tag="eu-ES"/>
+                <ComboBoxItem Content="Bosnian" Tag="bs-BA"/>
+                <ComboBoxItem Content="Bulgarian" Tag="bg-BG"/>
+                <ComboBoxItem Content="Cantonese (Traditional)" Tag="zh-TW"/>
+                <ComboBoxItem Content="Catalan" Tag="ca-ES"/>
+                <ComboBoxItem Content="Chinese (Literary)" Tag="zh-CN"/>
+                <ComboBoxItem Content="Chinese Simplified" Tag="zh-CN"/>
+                <ComboBoxItem Content="Chinese Traditional" Tag="zh-TW"/>
+                <ComboBoxItem Content="Croatian" Tag="hr-HR"/>
+                <ComboBoxItem Content="Czech" Tag="cs-CZ"/>
+                <ComboBoxItem Content="Danish" Tag="da-DK"/>
+                <ComboBoxItem Content="Dari" Tag="fa-AF"/>
+                <ComboBoxItem Content="Divehi" Tag="dv-MV"/>
+                <ComboBoxItem Content="Dutch" Tag="nl-NL"/>
+                <ComboBoxItem Content="English" Tag="en-US"/>
+                <ComboBoxItem Content="Estonian" Tag="et-EE"/>
+                <ComboBoxItem Content="Faroese" Tag="fo-FO"/>
+                <ComboBoxItem Content="Fijian" Tag="fj-FJ"/>
+                <ComboBoxItem Content="Filipino" Tag="tl-PH"/>
+                <ComboBoxItem Content="Finnish" Tag="fi-FI"/>
+                <ComboBoxItem Content="French" Tag="fr-FR"/>
+                <ComboBoxItem Content="French (Canada)" Tag="fr-CA"/>
+                <ComboBoxItem Content="Galician" Tag="gl-ES"/>
+                <ComboBoxItem Content="Georgian" Tag="ka-GE"/>
+                <ComboBoxItem Content="German" Tag="de-DE"/>
+                <ComboBoxItem Content="Greek" Tag="el-GR"/>
+                <ComboBoxItem Content="Gujarati" Tag="gu-IN"/>
+                <ComboBoxItem Content="Haitian Creole" Tag="ht-HT"/>
+                <ComboBoxItem Content="Hebrew" Tag="he-IL"/>
+                <ComboBoxItem Content="Hindi" Tag="hi-IN"/>
+                <ComboBoxItem Content="Hmong Daw" Tag="hmn-LA"/>
+                <ComboBoxItem Content="Hungarian" Tag="hu-HU"/>
+                <ComboBoxItem Content="Icelandic" Tag="is-IS"/>
+                <ComboBoxItem Content="Indonesian" Tag="id-ID"/>
+                <ComboBoxItem Content="Inuinnaqtun" Tag="iu-CA"/>
+                <ComboBoxItem Content="Inuktitut" Tag="iu-CA"/>
+                <ComboBoxItem Content="Inuktitut (Latin)" Tag="iu-CA"/>
+                <ComboBoxItem Content="Irish" Tag="ga-IE"/>
+                <ComboBoxItem Content="Italian" Tag="it-IT"/>
+                <ComboBoxItem Content="Japanese" Tag="ja-JP"/>
+                <ComboBoxItem Content="Kannada" Tag="kn-IN"/>
+                <ComboBoxItem Content="Kazakh" Tag="kk-KZ"/>
+                <ComboBoxItem Content="Khmer" Tag="km-KH"/>
+                <ComboBoxItem Content="Klingon" Tag="tlh"/>
+                <ComboBoxItem Content="Klingon (plqaD)" Tag="tlh"/>
+                <ComboBoxItem Content="Korean" Tag="ko-KR"/>
+                <ComboBoxItem Content="Kurdish (Central)" Tag="ku-TR"/>
+                <ComboBoxItem Content="Kurdish (Northern)" Tag="ku-IQ"/>
+                <ComboBoxItem Content="Kyrgyz" Tag="ky-KG"/>
+                <ComboBoxItem Content="Lao" Tag="lo-LA"/>
+                <ComboBoxItem Content="Latvian" Tag="lv-LV"/>
+                <ComboBoxItem Content="Lithuanian" Tag="lt-LT"/>
+                <ComboBoxItem Content="Macedonian" Tag="mk-MK"/>
+                <ComboBoxItem Content="Malagasy" Tag="mg-MG"/>
+                <ComboBoxItem Content="Malay" Tag="ms-MY"/>
+                <ComboBoxItem Content="Malayalam" Tag="ml-IN"/>
+                <ComboBoxItem Content="Maltese" Tag="mt-MT"/>
+                <ComboBoxItem Content="Māori" Tag="mi-NZ"/>
+                <ComboBoxItem Content="Marathi" Tag="mr-IN"/>
+                <ComboBoxItem Content="Mongolian (Cyrillic)" Tag="mn-MN"/>
+                <ComboBoxItem Content="Mongolian (Traditional)" Tag="mn-CN"/>
+                <ComboBoxItem Content="Myanmar" Tag="my-MM"/>
+                <ComboBoxItem Content="Nepali" Tag="ne-NP"/>
+                <ComboBoxItem Content="Norwegian" Tag="no-NO"/>
+                <ComboBoxItem Content="Odia" Tag="or-IN"/>
+                <ComboBoxItem Content="Pashto" Tag="ps-AF"/>
+                <ComboBoxItem Content="Persian" Tag="fa-IR"/>
+                <ComboBoxItem Content="Polish" Tag="pl-PL"/>
+                <ComboBoxItem Content="Portuguese (Brazil)" Tag="pt-BR"/>
+                <ComboBoxItem Content="Portuguese (Portugal)" Tag="pt-PT"/>
+                <ComboBoxItem Content="Punjabi" Tag="pa-IN"/>
+                <ComboBoxItem Content="Queretaro Otomi" Tag="otq-MX"/>
+                <ComboBoxItem Content="Romanian" Tag="ro-RO"/>
+                <ComboBoxItem Content="Russian" Tag="ru-RU"/>
+                <ComboBoxItem Content="Samoan" Tag="sm-WS"/>
+                <ComboBoxItem Content="Serbian (Cyrillic)" Tag="sr-Cyrl-RS"/>
+                <ComboBoxItem Content="Serbian (Latin)" Tag="sr-Latn-RS"/>
+                <ComboBoxItem Content="Slovak" Tag="sk-SK"/>
+                <ComboBoxItem Content="Slovenian" Tag="sl-SI"/>
+                <ComboBoxItem Content="Somali" Tag="so-SO"/>
+                <ComboBoxItem Content="Spanish" Tag="es-ES"/>
+                <ComboBoxItem Content="Swahili" Tag="sw-KE"/>
+                <ComboBoxItem Content="Swedish" Tag="sv-SE"/>
+                <ComboBoxItem Content="Tahitian" Tag="ty-PF"/>
+                <ComboBoxItem Content="Tamil" Tag="ta-IN"/>
+                <ComboBoxItem Content="Tatar" Tag="tt-RU"/>
+                <ComboBoxItem Content="Telugu" Tag="te-IN"/>
+                <ComboBoxItem Content="Thai" Tag="th-TH"/>
+                <ComboBoxItem Content="Tibetan" Tag="bo-CN"/>
+                <ComboBoxItem Content="Tigrinya" Tag="ti-ER"/>
+                <ComboBoxItem Content="Tongan" Tag="to-TO"/>
+                <ComboBoxItem Content="Turkish" Tag="tr-TR"/>
+                <ComboBoxItem Content="Turkmen" Tag="tk-TM"/>
+                <ComboBoxItem Content="Ukrainian" Tag="uk-UA"/>
+                <ComboBoxItem Content="Upper Sorbian" Tag="hsb-DE"/>
+                <ComboBoxItem Content="Urdu" Tag="ur-PK"/>
+                <ComboBoxItem Content="Uyghur" Tag="ug-CN"/>
+                <ComboBoxItem Content="Uzbek (Latin)" Tag="uz-Latn-UZ"/>
+                <ComboBoxItem Content="Vietnamese" Tag="vi-VN"/>
+                <ComboBoxItem Content="Welsh" Tag="cy-GB"/>
+                <ComboBoxItem Content="Yucatec Maya" Tag="yua-MX"/>
+                <ComboBoxItem Content="Zulu" Tag="zu-ZA"/>
+            </ComboBox>
+            <ComboBox x:Name="DestinationComboBox"  Height="61" Width="334" Margin="156,125,0,0" CornerRadius="20,20,20,20" Grid.Row="1" Grid.Column="1">
+                <ComboBoxItem Content="English" Tag="EN"/>
+                <ComboBoxItem Content="German" Tag="DE" IsSelected="True"/>
+                <ComboBoxItem Content="French" Tag="FR"/>
+                <ComboBoxItem Content="Italian" Tag="it-IT"/>
+                <ComboBoxItem Content="Afrikaans" Tag="af-ZA"/>
+                <ComboBoxItem Content="Tamil" Tag="TA"/>
+                <ComboBoxItem Content="Afrikaans" Tag="af-ZA"/>
+                <ComboBoxItem Content="Albanian" Tag="sq-AL"/>
+                <ComboBoxItem Content="Amharic" Tag="am-ET"/>
+                <ComboBoxItem Content="Arabic" Tag="ar-AR"/>
+                <ComboBoxItem Content="Armenian" Tag="hy-AM"/>
+                <ComboBoxItem Content="Assamese" Tag="as-IN"/>
+                <ComboBoxItem Content="Azerbaijani" Tag="az-AZ"/>
+                <ComboBoxItem Content="Bangla" Tag="bn-BD"/>
+                <ComboBoxItem Content="Bashkir" Tag="ba-RU"/>
+                <ComboBoxItem Content="Basque" Tag="eu-ES"/>
+                <ComboBoxItem Content="Bosnian" Tag="bs-BA"/>
+                <ComboBoxItem Content="Bulgarian" Tag="bg-BG"/>
+                <ComboBoxItem Content="Cantonese (Traditional)" Tag="zh-TW"/>
+                <ComboBoxItem Content="Catalan" Tag="ca-ES"/>
+                <ComboBoxItem Content="Chinese (Literary)" Tag="zh-CN"/>
+                <ComboBoxItem Content="Chinese Simplified" Tag="zh-CN"/>
+                <ComboBoxItem Content="Chinese Traditional" Tag="zh-TW"/>
+                <ComboBoxItem Content="Croatian" Tag="hr-HR"/>
+                <ComboBoxItem Content="Czech" Tag="cs-CZ"/>
+                <ComboBoxItem Content="Danish" Tag="da-DK"/>
+                <ComboBoxItem Content="Dari" Tag="fa-AF"/>
+                <ComboBoxItem Content="Divehi" Tag="dv-MV"/>
+                <ComboBoxItem Content="Dutch" Tag="nl-NL"/>
+                <ComboBoxItem Content="English" Tag="en-US"/>
+                <ComboBoxItem Content="Estonian" Tag="et-EE"/>
+                <ComboBoxItem Content="Faroese" Tag="fo-FO"/>
+                <ComboBoxItem Content="Fijian" Tag="fj-FJ"/>
+                <ComboBoxItem Content="Filipino" Tag="tl-PH"/>
+                <ComboBoxItem Content="Finnish" Tag="fi-FI"/>
+                <ComboBoxItem Content="French" Tag="fr-FR"/>
+                <ComboBoxItem Content="French (Canada)" Tag="fr-CA"/>
+                <ComboBoxItem Content="Galician" Tag="gl-ES"/>
+                <ComboBoxItem Content="Georgian" Tag="ka-GE"/>
+                <ComboBoxItem Content="German" Tag="de-DE"/>
+                <ComboBoxItem Content="Greek" Tag="el-GR"/>
+                <ComboBoxItem Content="Gujarati" Tag="gu-IN"/>
+                <ComboBoxItem Content="Haitian Creole" Tag="ht-HT"/>
+                <ComboBoxItem Content="Hebrew" Tag="he-IL"/>
+                <ComboBoxItem Content="Hindi" Tag="hi-IN"/>
+                <ComboBoxItem Content="Hmong Daw" Tag="hmn-LA"/>
+                <ComboBoxItem Content="Hungarian" Tag="hu-HU"/>
+                <ComboBoxItem Content="Icelandic" Tag="is-IS"/>
+                <ComboBoxItem Content="Indonesian" Tag="id-ID"/>
+                <ComboBoxItem Content="Inuinnaqtun" Tag="iu-CA"/>
+                <ComboBoxItem Content="Inuktitut" Tag="iu-CA"/>
+                <ComboBoxItem Content="Inuktitut (Latin)" Tag="iu-CA"/>
+                <ComboBoxItem Content="Irish" Tag="ga-IE"/>
+                <ComboBoxItem Content="Italian" Tag="it-IT"/>
+                <ComboBoxItem Content="Japanese" Tag="ja-JP"/>
+                <ComboBoxItem Content="Kannada" Tag="kn-IN"/>
+                <ComboBoxItem Content="Kazakh" Tag="kk-KZ"/>
+                <ComboBoxItem Content="Khmer" Tag="km-KH"/>
+                <ComboBoxItem Content="Klingon" Tag="tlh"/>
+                <ComboBoxItem Content="Klingon (plqaD)" Tag="tlh"/>
+                <ComboBoxItem Content="Korean" Tag="ko-KR"/>
+                <ComboBoxItem Content="Kurdish (Central)" Tag="ku-TR"/>
+                <ComboBoxItem Content="Kurdish (Northern)" Tag="ku-IQ"/>
+                <ComboBoxItem Content="Kyrgyz" Tag="ky-KG"/>
+                <ComboBoxItem Content="Lao" Tag="lo-LA"/>
+                <ComboBoxItem Content="Latvian" Tag="lv-LV"/>
+                <ComboBoxItem Content="Lithuanian" Tag="lt-LT"/>
+                <ComboBoxItem Content="Macedonian" Tag="mk-MK"/>
+                <ComboBoxItem Content="Malagasy" Tag="mg-MG"/>
+                <ComboBoxItem Content="Malay" Tag="ms-MY"/>
+                <ComboBoxItem Content="Malayalam" Tag="ml-IN"/>
+                <ComboBoxItem Content="Maltese" Tag="mt-MT"/>
+                <ComboBoxItem Content="Māori" Tag="mi-NZ"/>
+                <ComboBoxItem Content="Marathi" Tag="mr-IN"/>
+                <ComboBoxItem Content="Mongolian (Cyrillic)" Tag="mn-MN"/>
+                <ComboBoxItem Content="Mongolian (Traditional)" Tag="mn-CN"/>
+                <ComboBoxItem Content="Myanmar" Tag="my-MM"/>
+                <ComboBoxItem Content="Nepali" Tag="ne-NP"/>
+                <ComboBoxItem Content="Norwegian" Tag="no-NO"/>
+                <ComboBoxItem Content="Odia" Tag="or-IN"/>
+                <ComboBoxItem Content="Pashto" Tag="ps-AF"/>
+                <ComboBoxItem Content="Persian" Tag="fa-IR"/>
+                <ComboBoxItem Content="Polish" Tag="pl-PL"/>
+                <ComboBoxItem Content="Portuguese (Brazil)" Tag="pt-BR"/>
+                <ComboBoxItem Content="Portuguese (Portugal)" Tag="pt-PT"/>
+                <ComboBoxItem Content="Punjabi" Tag="pa-IN"/>
+                <ComboBoxItem Content="Queretaro Otomi" Tag="otq-MX"/>
+                <ComboBoxItem Content="Romanian" Tag="ro-RO"/>
+                <ComboBoxItem Content="Russian" Tag="ru-RU"/>
+                <ComboBoxItem Content="Samoan" Tag="sm-WS"/>
+                <ComboBoxItem Content="Serbian (Cyrillic)" Tag="sr-Cyrl-RS"/>
+                <ComboBoxItem Content="Serbian (Latin)" Tag="sr-Latn-RS"/>
+                <ComboBoxItem Content="Slovak" Tag="sk-SK"/>
+                <ComboBoxItem Content="Slovenian" Tag="sl-SI"/>
+                <ComboBoxItem Content="Somali" Tag="so-SO"/>
+                <ComboBoxItem Content="Spanish" Tag="es-ES"/>
+                <ComboBoxItem Content="Swahili" Tag="sw-KE"/>
+                <ComboBoxItem Content="Swedish" Tag="sv-SE"/>
+                <ComboBoxItem Content="Tahitian" Tag="ty-PF"/>
+                <ComboBoxItem Content="Tamil" Tag="ta-IN"/>
+                <ComboBoxItem Content="Tatar" Tag="tt-RU"/>
+                <ComboBoxItem Content="Telugu" Tag="te-IN"/>
+                <ComboBoxItem Content="Thai" Tag="th-TH"/>
+                <ComboBoxItem Content="Tibetan" Tag="bo-CN"/>
+                <ComboBoxItem Content="Tigrinya" Tag="ti-ER"/>
+                <ComboBoxItem Content="Tongan" Tag="to-TO"/>
+                <ComboBoxItem Content="Turkish" Tag="tr-TR"/>
+                <ComboBoxItem Content="Turkmen" Tag="tk-TM"/>
+                <ComboBoxItem Content="Ukrainian" Tag="uk-UA"/>
+                <ComboBoxItem Content="Upper Sorbian" Tag="hsb-DE"/>
+                <ComboBoxItem Content="Urdu" Tag="ur-PK"/>
+                <ComboBoxItem Content="Uyghur" Tag="ug-CN"/>
+                <ComboBoxItem Content="Uzbek (Latin)" Tag="uz-Latn-UZ"/>
+                <ComboBoxItem Content="Vietnamese" Tag="vi-VN"/>
+                <ComboBoxItem Content="Welsh" Tag="cy-GB"/>
+                <ComboBoxItem Content="Yucatec Maya" Tag="yua-MX"/>
+                <ComboBoxItem Content="Zulu" Tag="zu-ZA"/>
+            </ComboBox>
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="SourceTextBox" CornerRadius="20" TextAlignment="Center" Text="Enter your text here" FontSize="24" MinHeight="323" Margin="40,27,40,99" Grid.Column="0"/>
+                <Button Width="100" Height="100" Click="TranslateText"  Grid.Column="1" Margin="10,10,10,50" CornerRadius="20,20,20,20">
+                    <Image Source="ms-appx:///Assets/forward-right-double.png" />
+                </Button> 
+                <TextBox x:Name="DestinationTextBox" CornerRadius="20" TextAlignment="Center" Text="Translated Text Here" FontSize="24" MinHeight="323" Margin="40,27,40,99" Grid.Column="2"/>
+
+            </Grid>
+
+            <Button Width="100" Height="100" Click="TypeHandler" Grid.Row="3" Grid.Column="0" Margin="30,0,0,30" HorizontalAlignment="Left" CornerRadius="20,20,20,20" Background="#DDD">
+                <Image Source="ms-appx:///Assets/upload-frame.png" Margin="0,0,0,0"/>
+            </Button>
+
+            <TextBlock x:Name="UploadedFileName" Text="" FontSize="30" Grid.Row="3" Grid.Column="1" Margin="0,0,0,30" HorizontalAlignment="Left"></TextBlock>
+
+            <Button Width="100" Height="100" Click="ExportFile" Grid.Row="3" Grid.Column="2" Margin="0,0,30,30" HorizontalAlignment="Right" CornerRadius="20,20,20,20" Background="#DDD">
+                <Image Source="ms-appx:///Assets/download-frame.png"/>
+            </Button>
+
+        </Grid>
+
+    </Viewbox>
+    
 </Window>
