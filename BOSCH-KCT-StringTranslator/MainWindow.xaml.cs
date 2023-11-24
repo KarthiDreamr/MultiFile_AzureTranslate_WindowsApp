@@ -240,21 +240,22 @@ namespace BOSCH_KCT_StringTranslator
 
             // Check if the table exists
             string checkTableQuery = @"
-    IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'BOSCH_Translation_Table')
-    CREATE TABLE BOSCH_Translation_Table
+    IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'TXT01_TRANSLATED_TEXTS')
+    CREATE TABLE TXT01_TRANSLATED_TEXTS
     (
-        id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-        language_id VARCHAR(20) NOT NULL,
-        string NVARCHAR(500) NOT NULL,
-        CreatedDate DATETIME NOT NULL,
-        CONSTRAINT UC_Id_Language UNIQUE (id, language_id)
+        TXT01_TRANSLATION_TEXT_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        TXT01_TEXT_ID INT NOT NULL,
+        TXT01_LANG_ID VARCHAR(20) NOT NULL,
+        TXT01_TEXT NVARCHAR(3000) NOT NULL,
+        TXT01_CREATED_DATE DATETIME NOT NULL,
+        CONSTRAINT UC_Id_Language UNIQUE (TXT01_TEXT_ID, TXT01_LANG_ID)
     );
 
 ";
             using SqlCommand checkTableCommand = new(checkTableQuery, connection);
             checkTableCommand.ExecuteNonQuery();
 
-            // Add the source language text to the database
+            /* Add the source language text to the database
             string insertSourceQuery = @"
     INSERT INTO BOSCH_Translation_Table (language_id, string, CreatedDate)
     VALUES (@language_id, @string, GETDATE()); ";
@@ -270,9 +271,38 @@ namespace BOSCH_KCT_StringTranslator
             using SqlCommand insertDestinationCommand = new(insertDestinationQuery, connection);
             insertDestinationCommand.Parameters.AddWithValue("@language_id", destinationLanguage);
             insertDestinationCommand.Parameters.AddWithValue("@string", translatedText);
-            insertDestinationCommand.ExecuteNonQuery();
-        }
+            insertDestinationCommand.ExecuteNonQuery(); */
 
+            
+            // Add the source language text to the database
+            string insertSourceQuery = @"
+INSERT INTO TXT01_TRANSLATED_TEXTS (TXT01_TEXT_ID, TXT01_LANG_ID, TXT01_TEXT, TXT01_CREATED_DATE)
+VALUES (@text_id, @lang_id, @text, GETDATE()); ";
+            using SqlCommand insertSourceCommand = new(insertSourceQuery, connection);
+            insertSourceCommand.Parameters.AddWithValue("@text_id", 4);
+            insertSourceCommand.Parameters.AddWithValue("@lang_id", sourceLanguage);
+            insertSourceCommand.Parameters.AddWithValue("@text", originalText);
+            insertSourceCommand.ExecuteNonQuery();
+
+            // Add the destination language text to the database
+            string insertDestinationQuery = @"
+INSERT INTO TXT01_TRANSLATED_TEXTS (TXT01_TEXT_ID, TXT01_LANG_ID, TXT01_TEXT, TXT01_CREATED_DATE)
+VALUES (@texts_id, @language_id, @txt, GETDATE()); ";
+            using SqlCommand insertDestinationCommand = new(insertDestinationQuery, connection);
+            insertDestinationCommand.Parameters.AddWithValue("@texts_id", 4);
+            Debug.WriteLine("-----------");
+            Debug.WriteLine(destinationLanguage);
+            Debug.WriteLine("-----------");
+
+            Debug.WriteLine("-----------");
+            Debug.WriteLine(translatedText);
+            Debug.WriteLine("-----------");
+
+            insertDestinationCommand.Parameters.AddWithValue("@language_id", destinationLanguage);
+            insertDestinationCommand.Parameters.AddWithValue("@txt", translatedText);
+            insertDestinationCommand.ExecuteNonQuery();
+
+        }
 
         public async void TypeHandler(object sender, RoutedEventArgs e)
         {
