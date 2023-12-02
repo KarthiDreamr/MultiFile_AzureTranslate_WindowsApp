@@ -139,6 +139,33 @@ namespace BOSCH_KCT_StringTranslator
         private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com";
         private static readonly string location = "global";
 
+        public void DatabaseCreate()
+        {
+
+            string connectionString = "Data Source=(local);Initial Catalog=master;Integrated Security=SSPI;Encrypt=false";
+
+            using SqlConnection connection = new(connectionString);
+
+            connection.Open();
+
+            // Check if the table exists
+            string checkTableQuery = @"
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'TXT01_TRANSLATED_TEXTS')
+                CREATE TABLE TXT01_TRANSLATED_TEXTS
+                (
+                    TXT01_TRANSLATION_TEXT_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+                    TXT01_TEXT_ID INT NOT NULL,
+                    TXT01_LANG_ID VARCHAR(20) NOT NULL,
+                    TXT01_TEXT NVARCHAR(3000) NOT NULL,
+                    TXT01_CREATED_DATE DATETIME NOT NULL,
+                    CONSTRAINT UC_Id_Language UNIQUE (TXT01_TEXT_ID, TXT01_LANG_ID)
+                );
+            ";
+
+            using SqlCommand checkTableCommand = new(checkTableQuery, connection);
+            checkTableCommand.ExecuteNonQuery();
+        }
+
         public async Task<string> TranslateString(string stringValue)
         {
             string sourceLanguage = ((ComboBoxItem)SourceComboBox.SelectedItem)?.Tag?.ToString() ?? SourceComboBox.Items[2].ToString();
@@ -160,147 +187,207 @@ namespace BOSCH_KCT_StringTranslator
                 // Trim the empty space
                 stringValue = stringValue.Trim();
 
-                string route;
-                // The route for the translation API after 
+                DatabaseCreate();
 
-                if (sourceLanguage == "")
+                string CheckedTranslation = CheckTranslationExists(stringValue,sourceLanguage, destinationLanguage);
+
+                if (!CheckedTranslation.Equals("-1") && !CheckedTranslation.StartsWith("{"))
                 {
-                    route = "/translate?api-version=3.0" + "&to=" + destinationLanguage;
-                }
+                    Debug.WriteLine("Miracle Happened");
+                    return CheckedTranslation;                   
+                }                
                 else
                 {
-                    route = "/translate?api-version=3.0&from=" + sourceLanguage + "&to=" + destinationLanguage;
-                }
+                    string route;
+                    // The route for the translation API after 
 
-                // The body of the request
-                object[] body = new object[] { new { Text = stringValue } };
-                var requestBody = JsonConvert.SerializeObject(body);
-
-                // Create a new HTTP client and request
-                using var client = new HttpClient();
-                using var request = new HttpRequestMessage();
-                // Set the method, URI, content, and headers of the request
-                request.Method = HttpMethod.Post;
-                request.RequestUri = new Uri(endpoint + route);
-                request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                request.Headers.Add("Ocp-Apim-Subscription-Key", key);
-                request.Headers.Add("Ocp-Apim-Subscription-Region", location);
-
-                // Send the request and get the response
-                HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
-
-
-                string result = await response.Content.ReadAsStringAsync();
-
-                if (!string.IsNullOrEmpty(result))
-                {
-                    if (response.IsSuccessStatusCode)
+                    if (sourceLanguage == "")
                     {
-                        // Parse the JSON array and get the translated text
-                        JArray jsonArray = JArray.Parse(result);
-                        string translatedText = jsonArray[0]["translations"][0]["text"].ToString();
-
-                        AddTranslation(sourceLanguage,destinationLanguage,stringValue, translatedText);
-
-                        // Return the translated text
-                        return translatedText;
-
+                        route = "/translate?api-version=3.0" + "&to=" + destinationLanguage;
                     }
                     else
                     {
-                        // Parse the JSON object and get the error message
-                        JObject jsonObject = JObject.Parse(result);
-                        string errorMessage = jsonObject["error"]["message"].ToString();
+                        route = "/translate?api-version=3.0&from=" + sourceLanguage + "&to=" + destinationLanguage;
+                    }
 
-                        Debug.WriteLine("An error occurred: " + errorMessage);
+                    // The body of the request
+                    object[] body = new object[] { new { Text = stringValue } };
+                    var requestBody = JsonConvert.SerializeObject(body);
+
+                    // Create a new HTTP client and request
+                    using var client = new HttpClient();
+                    using var request = new HttpRequestMessage();
+                    // Set the method, URI, content, and headers of the request
+                    request.Method = HttpMethod.Post;
+                    request.RequestUri = new Uri(endpoint + route);
+                    request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                    request.Headers.Add("Ocp-Apim-Subscription-Key", key);
+                    request.Headers.Add("Ocp-Apim-Subscription-Region", location);
+
+                    // Send the request and get the response
+                    HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+
+
+                    string result = await response.Content.ReadAsStringAsync();
+
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            // Parse the JSON array and get the translated text
+                            JArray jsonArray = JArray.Parse(result);
+                            string translatedText = jsonArray[0]["translations"][0]["text"].ToString();
+
+                            if (CheckedTranslation.StartsWith("{"))
+                            {
+
+                                Debug.WriteLine("(CheckedTranslation.StartsWith(\"{\")");
+                                // Parse the textId from the CheckedTranslation string
+                                int textId = int.Parse(CheckedTranslation.TrimStart('{').TrimEnd('}'));
+                                // Add only the destination string to the database
+                                AddTranslation(sourceLanguage, destinationLanguage, stringValue, translatedText, textId);
+                            }
+                            else
+                            {
+                                Debug.WriteLine(" Else (CheckedTranslation.StartsWith(\"{\")");
+                                AddTranslation(sourceLanguage, destinationLanguage, stringValue, translatedText, -1);
+                            }
+
+
+                            // Return the translated text
+                            return translatedText;
+
+                        }
+                        else
+                        {
+                            // Parse the JSON object and get the error message
+                            JObject jsonObject = JObject.Parse(result);
+                            string errorMessage = jsonObject["error"]["message"].ToString();
+
+                            Debug.WriteLine("An error occurred: " + errorMessage);
+                            return stringValue;
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("The response is empty.");
                         return stringValue;
                     }
                 }
-                else
-                {
-                    Debug.WriteLine("The response is empty.");
-                    return stringValue;
-                }
             }
+
             catch (Exception ex)
             {
                 // Handle the exception
                 Debug.WriteLine("An error occurred: " + ex.Message);
                 return stringValue;
             }
-
         }
 
-        public void AddTranslation(String sourceLanguage, String destinationLanguage, String originalText, String translatedText)
+        public string CheckTranslationExists(string stringValue, string sourceLanguage, string destinationLanguage)
         {
             string connectionString = "Data Source=(local);Initial Catalog=master;Integrated Security=SSPI;Encrypt=false";
 
             using SqlConnection connection = new(connectionString);
             connection.Open();
 
-            // Check if the table exists
-            string checkTableQuery = @"
-    IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'TXT01_TRANSLATED_TEXTS')
-    CREATE TABLE TXT01_TRANSLATED_TEXTS
-    (
-        TXT01_TRANSLATION_TEXT_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-        TXT01_TEXT_ID INT NOT NULL,
-        TXT01_LANG_ID VARCHAR(20) NOT NULL,
-        TXT01_TEXT NVARCHAR(3000) NOT NULL,
-        TXT01_CREATED_DATE DATETIME NOT NULL,
-        CONSTRAINT UC_Id_Language UNIQUE (TXT01_TEXT_ID, TXT01_LANG_ID)
-    );
+            string query = @"
+                DECLARE @textId INT;
+                SELECT @textId = TXT01_TEXT_ID
+                FROM TXT01_TRANSLATED_TEXTS
+                WHERE TXT01_TEXT = @stringValue AND TXT01_LANG_ID = @sourceLanguage;
 
-";
-            using SqlCommand checkTableCommand = new(checkTableQuery, connection);
-            checkTableCommand.ExecuteNonQuery();
+                IF @textId IS NULL
+                BEGIN
+                    SELECT '-1' AS TXT01_TEXT;
+                END
+                ELSE IF EXISTS (
+                    SELECT 1
+                    FROM TXT01_TRANSLATED_TEXTS
+                    WHERE TXT01_TEXT_ID = @textId AND TXT01_LANG_ID = @destinationLanguage
+                )
+                BEGIN
+                    SELECT TXT01_TEXT
+                    FROM TXT01_TRANSLATED_TEXTS
+                    WHERE TXT01_TEXT_ID = @textId AND TXT01_LANG_ID = @destinationLanguage;
+                END
+                ELSE
+                BEGIN
+                    SELECT '{' + CAST(@textId AS VARCHAR(10)) + '}' AS TXT01_TEXT;
+                END
+                ";
 
-            /* Add the source language text to the database
-            string insertSourceQuery = @"
-    INSERT INTO BOSCH_Translation_Table (language_id, string, CreatedDate)
-    VALUES (@language_id, @string, GETDATE()); ";
-            using SqlCommand insertSourceCommand = new(insertSourceQuery, connection);
-            insertSourceCommand.Parameters.AddWithValue("@language_id", sourceLanguage);
-            insertSourceCommand.Parameters.AddWithValue("@string", originalText);
-            insertSourceCommand.ExecuteNonQuery();
+            using SqlCommand command = new(query, connection);
+            command.Parameters.AddWithValue("@stringValue", stringValue);
+            command.Parameters.AddWithValue("@sourceLanguage", sourceLanguage);
+            command.Parameters.AddWithValue("@destinationLanguage", destinationLanguage);
 
-            // Add the destination language text to the database
-            string insertDestinationQuery = @"
-    INSERT INTO BOSCH_Translation_Table (language_id, string, CreatedDate)
-    VALUES (@language_id, @string, GETDATE()); ";
-            using SqlCommand insertDestinationCommand = new(insertDestinationQuery, connection);
-            insertDestinationCommand.Parameters.AddWithValue("@language_id", destinationLanguage);
-            insertDestinationCommand.Parameters.AddWithValue("@string", translatedText);
-            insertDestinationCommand.ExecuteNonQuery(); */
+            object result = command.ExecuteScalar();
+            return Convert.ToString(result);
+        }
 
-            
-            // Add the source language text to the database
-            string insertSourceQuery = @"
-INSERT INTO TXT01_TRANSLATED_TEXTS (TXT01_TEXT_ID, TXT01_LANG_ID, TXT01_TEXT, TXT01_CREATED_DATE)
-VALUES (@text_id, @lang_id, @text, GETDATE()); ";
-            using SqlCommand insertSourceCommand = new(insertSourceQuery, connection);
-            insertSourceCommand.Parameters.AddWithValue("@text_id", 4);
-            insertSourceCommand.Parameters.AddWithValue("@lang_id", sourceLanguage);
-            insertSourceCommand.Parameters.AddWithValue("@text", originalText);
-            insertSourceCommand.ExecuteNonQuery();
 
-            // Add the destination language text to the database
-            string insertDestinationQuery = @"
-INSERT INTO TXT01_TRANSLATED_TEXTS (TXT01_TEXT_ID, TXT01_LANG_ID, TXT01_TEXT, TXT01_CREATED_DATE)
-VALUES (@texts_id, @language_id, @txt, GETDATE()); ";
-            using SqlCommand insertDestinationCommand = new(insertDestinationQuery, connection);
-            insertDestinationCommand.Parameters.AddWithValue("@texts_id", 4);
-            Debug.WriteLine("-----------");
-            Debug.WriteLine(destinationLanguage);
-            Debug.WriteLine("-----------");
+        public void AddTranslation(String sourceLanguage, String destinationLanguage, String originalText, String translatedText, int textId)
+        {
 
-            Debug.WriteLine("-----------");
-            Debug.WriteLine(translatedText);
-            Debug.WriteLine("-----------");
+            string connectionString = "Data Source=(local);Initial Catalog=master;Integrated Security=SSPI;Encrypt=false";
 
-            insertDestinationCommand.Parameters.AddWithValue("@language_id", destinationLanguage);
-            insertDestinationCommand.Parameters.AddWithValue("@txt", translatedText);
-            insertDestinationCommand.ExecuteNonQuery();
+            using SqlConnection connection = new(connectionString);
+            connection.Open();
+
+            // Check if the TextIdSequence exists
+            string checkTextIdSequenceQuery = @"
+                IF NOT EXISTS (SELECT * FROM sys.sequences WHERE name = 'TextIdSequence')
+                BEGIN
+                    CREATE SEQUENCE dbo.TextIdSequence
+                        AS INT
+                        START WITH 1
+                        INCREMENT BY 1;
+                END
+            ";
+
+            using SqlCommand checkTextIdSequenceCommand = new(checkTextIdSequenceQuery, connection);
+            checkTextIdSequenceCommand.ExecuteNonQuery();
+
+            if ( textId != -1 )
+            {
+                               // Add the destination language text to the database
+                string insertDestinationQuery = @"
+                INSERT INTO TXT01_TRANSLATED_TEXTS (TXT01_TEXT_ID, TXT01_LANG_ID, TXT01_TEXT, TXT01_CREATED_DATE)
+                VALUES (@texts_id, @language_id, @txt, GETDATE()); ";
+                using SqlCommand insertDestinationCommand = new(insertDestinationQuery, connection);
+                insertDestinationCommand.Parameters.AddWithValue("@texts_id", textId);
+                insertDestinationCommand.Parameters.AddWithValue("@language_id", destinationLanguage);
+                insertDestinationCommand.Parameters.AddWithValue("@txt", translatedText);
+                insertDestinationCommand.ExecuteNonQuery();
+            }
+            else
+            {
+                // Get the next value from the sequence
+                string sequenceQuery = "SELECT NEXT VALUE FOR dbo.TextIdSequence;";
+                using SqlCommand sequenceCommand = new(sequenceQuery, connection);
+                textId = (int)sequenceCommand.ExecuteScalar();
+
+                // Add the source language text to the database
+                string insertSourceQuery = @"
+                INSERT INTO TXT01_TRANSLATED_TEXTS (TXT01_TEXT_ID, TXT01_LANG_ID, TXT01_TEXT, TXT01_CREATED_DATE)
+                VALUES (@text_id, @lang_id, @text, GETDATE()); ";
+                using SqlCommand insertSourceCommand = new(insertSourceQuery, connection);
+                insertSourceCommand.Parameters.AddWithValue("@text_id", textId);
+                insertSourceCommand.Parameters.AddWithValue("@lang_id", sourceLanguage);
+                insertSourceCommand.Parameters.AddWithValue("@text", originalText);
+                insertSourceCommand.ExecuteNonQuery();
+
+                // Add the destination language text to the database
+                string insertDestinationQuery = @"
+                INSERT INTO TXT01_TRANSLATED_TEXTS (TXT01_TEXT_ID, TXT01_LANG_ID, TXT01_TEXT, TXT01_CREATED_DATE)
+                VALUES (@texts_id, @language_id, @txt, GETDATE()); ";
+                using SqlCommand insertDestinationCommand = new(insertDestinationQuery, connection);
+                insertDestinationCommand.Parameters.AddWithValue("@texts_id", textId);
+                insertDestinationCommand.Parameters.AddWithValue("@language_id", destinationLanguage);
+                insertDestinationCommand.Parameters.AddWithValue("@txt", translatedText);
+                insertDestinationCommand.ExecuteNonQuery();
+            }          
 
         }
 
@@ -480,7 +567,6 @@ VALUES (@texts_id, @language_id, @txt, GETDATE()); ";
 
         private async void TextUpload( StorageFile storageFile)
         {                      
-            
             // Read the input file
             string textToTranslate = await Windows.Storage.FileIO.ReadTextAsync(storageFile);
 
@@ -538,88 +624,6 @@ VALUES (@texts_id, @language_id, @txt, GETDATE()); ";
         {
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }
