@@ -33,8 +33,8 @@
                         <TextBlock Text="{Binding}" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
-               <!-- <ComboBoxItem Content="AutoDetect" Tag="" IsSelected="True"/> -->
-                <ComboBoxItem Content="English" Tag="EN"  IsSelected="True"/>
+                <ComboBoxItem Content="AutoDetect" Tag="detect" IsSelected="True"/>
+                <ComboBoxItem Content="English" Tag="EN" />
                 <ComboBoxItem Content="German" Tag="DE"/>
                 <ComboBoxItem Content="French" Tag="FR"/>
                 <ComboBoxItem Content="Italian" Tag="it-IT"/>
@@ -157,7 +157,6 @@
                 <ComboBoxItem Content="Italian" Tag="it-IT"/>
                 <ComboBoxItem Content="Afrikaans" Tag="af-ZA"/>
                 <ComboBoxItem Content="Tamil" Tag="TA"/>
-                <ComboBoxItem Content="Afrikaans" Tag="af-ZA"/>
                 <ComboBoxItem Content="Albanian" Tag="sq-AL"/>
                 <ComboBoxItem Content="Amharic" Tag="am-ET"/>
                 <ComboBoxItem Content="Arabic" Tag="ar-AR"/>
@@ -268,6 +267,7 @@
                 <ComboBoxItem Content="Welsh" Tag="cy-GB"/>
                 <ComboBoxItem Content="Yucatec Maya" Tag="yua-MX"/>
                 <ComboBoxItem Content="Zulu" Tag="zu-ZA"/>
+                
             </ComboBox>
 
             <Grid Grid.Row="2" Grid.ColumnSpan="3">

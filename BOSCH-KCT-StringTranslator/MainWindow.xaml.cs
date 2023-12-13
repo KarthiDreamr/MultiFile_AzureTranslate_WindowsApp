@@ -135,9 +135,9 @@ namespace BOSCH_KCT_StringTranslator
             }
         }
 
-        private static readonly string key = "547af7f18d404062a17aa0636811691c";
+        private static readonly string key = "64b88b2d76cc4a1ea73bbc01fbd194b3";
         private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com";
-        private static readonly string location = "global";
+        private static readonly string location = "eastus";
 
         public void DatabaseCreate()
         {
@@ -174,6 +174,10 @@ namespace BOSCH_KCT_StringTranslator
 
             try
             {
+                // null string
+                if (string.IsNullOrEmpty(stringValue)) { return stringValue; }
+                // source and destination same 
+                if ( sourceLanguage ==  destinationLanguage) { return stringValue; }
 
                 // Trim the empty space
                 stringValue = stringValue.Trim();
@@ -189,11 +193,42 @@ namespace BOSCH_KCT_StringTranslator
 
                 DatabaseCreate();
 
-                string CheckedTranslation = CheckTranslationExists(stringValue,sourceLanguage, destinationLanguage);
+                string CheckedTranslation;
+
+                if (sourceLanguage == "detect")
+                {
+                    // Just detect language
+                    string route = "/detect?api-version=3.0";
+                    string textToLangDetect = stringValue;
+                    object[] body = new object[] { new { Text = textToLangDetect } };
+                    var requestBody = JsonConvert.SerializeObject(body);
+
+                    using (var client = new HttpClient())
+                    using (var request = new HttpRequestMessage())
+                    {
+                        // Build the request.
+                        request.Method = HttpMethod.Post;
+                        request.RequestUri = new Uri(endpoint + route);
+                        request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                        request.Headers.Add("Ocp-Apim-Subscription-Key", key);
+                        request.Headers.Add("Ocp-Apim-Subscription-Region", location);
+
+                        // Send the request and get response.
+                        HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+                        // Read response as a string.
+                        string result = await response.Content.ReadAsStringAsync();
+                        
+                        JArray jsonArray = JArray.Parse(result);
+                        string detectedLanguage = jsonArray[0]["language"].ToString();
+                        sourceLanguage = detectedLanguage.ToUpper();
+                    }
+                }
+                
+                CheckedTranslation = CheckTranslationExists(stringValue, sourceLanguage, destinationLanguage);
+                
 
                 if (!CheckedTranslation.Equals("-1") && !CheckedTranslation.StartsWith("{"))
                 {
-                    Debug.WriteLine("Miracle Happened");
                     return CheckedTranslation;                   
                 }                
                 else
@@ -201,7 +236,7 @@ namespace BOSCH_KCT_StringTranslator
                     string route;
                     // The route for the translation API after 
 
-                    if (sourceLanguage == "")
+                    if (sourceLanguage == "detect")
                     {
                         route = "/translate?api-version=3.0" + "&to=" + destinationLanguage;
                     }
@@ -236,13 +271,23 @@ namespace BOSCH_KCT_StringTranslator
                         {
                             // Parse the JSON array and get the translated text
                             JArray jsonArray = JArray.Parse(result);
+
+                            JToken detectedLanguageToken = jsonArray[0]["detectedLanguage"];
+
+                            if (detectedLanguageToken != null)
+                            {
+                                sourceLanguage = jsonArray[0]["detectedLanguage"]["language"].ToString();
+                            }
+                            else
+                            {
+                                Console.WriteLine("No detected language found in the result.");
+                            }
+
                             string translatedText = jsonArray[0]["translations"][0]["text"].ToString();
 
                             if (CheckedTranslation.StartsWith("{"))
                             {
 
-                                Debug.WriteLine("(CheckedTranslation.StartsWith(\"{\")");
-                                // Parse the textId from the CheckedTranslation string
                                 int textId = int.Parse(CheckedTranslation.TrimStart('{').TrimEnd('}'));
                                 // Add only the destination string to the database
                                 AddTranslation(sourceLanguage, destinationLanguage, stringValue, translatedText, textId);
@@ -567,6 +612,8 @@ namespace BOSCH_KCT_StringTranslator
 
         private async void TextUpload( StorageFile storageFile)
         {                      
+
+            string fileName = storageFile.Name;
             // Read the input file
             string textToTranslate = await Windows.Storage.FileIO.ReadTextAsync(storageFile);
 
@@ -579,7 +626,7 @@ namespace BOSCH_KCT_StringTranslator
             var savePicker = new Windows.Storage.Pickers.FileSavePicker();
             savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
             savePicker.FileTypeChoices.Add("Text", new List<string>() { ".txt" });
-            savePicker.SuggestedFileName = "NewText_Translated";
+            savePicker.SuggestedFileName = fileName+"_Translated";
 
             // Get the window handle and initialize the picker
             InitializeWithWindow.Initialize(savePicker,hwnd);
@@ -588,6 +635,8 @@ namespace BOSCH_KCT_StringTranslator
             Windows.Storage.StorageFile outputFile = await savePicker.PickSaveFileAsync();
             if (outputFile != null)
             {
+                // Delay for 5 seconds
+                await Task.Delay(5000);
                 // Write the translated text to the output file
                 await Windows.Storage.FileIO.WriteTextAsync(outputFile, translatedText);
             }            
