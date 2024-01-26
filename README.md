@@ -12,8 +12,6 @@ A Microsoft SQL database is connected to the application to increase the efficie
   [KCT - BGSW_Translate Utility Project Report 2.1](https://1drv.ms/w/s!AlCg_DrCVNeDhizmId2EV1gARVlj?e=EYyXcm)
 </div>
 
-Okay, I can help you make your content more concise and specific. Here is a revised version of your features heading in markdown:
-
 ## Features of KCT-BSGW Translation Utility
 
 - **Modern and intuitive user interface** The application uses WinUI 3, the latest Windows UI library, to provide a smooth and responsive user experience.
@@ -22,7 +20,7 @@ Okay, I can help you make your content more concise and specific. Here is a revi
 - **Innovative and industry-oriented solution** The application creates a database that covers translations for most Automotive Aftermath Manuals and implements it in the industry as a web application hosted on Microsoft Azure. This enables faster and easier access to multilingual information for automotive professionals and customers.
 - **Versatile and adaptable project** The application can be repurposed to use in many other use cases that require text and document translation, such as education, tourism, media, and entertainment. For example, the application can be used to translate course materials, travel guides, news articles, and subtitles.
 
-### Prerequisites
+## Prerequisites
 - [Visual Studio Community 2022](https://visualstudio.microsoft.com/downloads/?cid=learn-onpage-download-cta) (recommended) or Visual Studio 2019.
 - [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16)
 - Tools for the Windows App SDK. Install using the following command:
@@ -30,8 +28,17 @@ Okay, I can help you make your content more concise and specific. Here is a revi
 winget install "Visual Studio Community 2022"  --override "--add Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cs" -s msstore
 ```
 
-## Try it Out ( placeholder api key - translation won't work )
+## Try it Out
 
+1.Extract AppPackages
+2.Right click Add-AppDevPackage and run with powershell
+3.Enter 'a' in the terminal to change execution policy
+4.Then press Enter to turn on developer mode 
+5.Press 'y' in the new window to install certificate
+6.Allow any permission and press ENTER
+7.Search and run "BOSCH-KCT-StringTranslator" Application
+
+** placeholder api key - translation won't work 
 
 ## Build from Source
 1. Clone the repository using
