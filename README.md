@@ -5,10 +5,13 @@ This project is a collaboration between a myself, a student of Kumaraguru Collag
 
 A Microsoft SQL database is connected to the application to increase the efficiency of translation by storing previous translations. The ultimate goal is to create a database that covers translations for most Automotive Aftermath Manuals. This prototype will eventually be implemented in the industry by creating a web application and hosting it on Microsoft Azure, along with the database for storing translations.
 
+<div align="center">
+
   ![WinUI3App](preview/WinUI3App.png)
 
-### Complete documentantion
-[KCT - BGSW_Translate Utility Project Report 2.1](https://1drv.ms/w/s!AlCg_DrCVNeDhizmId2EV1gARVlj?e=EYyXcm)
+  ### Complete documentantion 
+  [KCT - BGSW_Translate Utility Project Report 2.1](https://1drv.ms/w/s!AlCg_DrCVNeDhizmId2EV1gARVlj?e=EYyXcm)
+</div>
 
 ## Development Environment
 The application is a C# .NET project with a Windows UI Library (WinUI) 3 user interface (UI), created using Visual Studio.
@@ -34,5 +37,6 @@ git clone https://github.com/KarthiDreamr/MultiFile_AzureTranslate_WindowsApp.gi
 4. Press the run button after selecting debugging or release build as you needed.
 
 <div style="text-align: center;">
+  
   ![WinUI3App](preview/VisualStudioEnviroinment.png)
 </div>
