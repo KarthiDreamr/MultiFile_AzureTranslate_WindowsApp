@@ -17,7 +17,7 @@ winget install "Visual Studio Community 2022"  --override "--add Microsoft.Visua
 ```
 
 ## Build and Run Steps
-1. Clone the repository using `git clone`.
+1. Clone the repository using `git clone https://github.com/KarthiDreamr/MultiFile_AzureTranslate_WindowsApp.git`.
 2. Replace the mock key in the code with your Azure Translate instance key.
 3. The `App.xaml` file and code-behind file(s) define an `Application`-derived class that represents your running app. The `MainWindow.xaml` file and code-behind file(s) define a `MainWindow` class that represents the main window displayed by your app. These classes derive from types in the `Microsoft.UI.Xaml` namespace provided by WinUI 3.
 4. Press the run button after selecting debugging.
