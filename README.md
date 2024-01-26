@@ -12,8 +12,15 @@ A Microsoft SQL database is connected to the application to increase the efficie
   [KCT - BGSW_Translate Utility Project Report 2.1](https://1drv.ms/w/s!AlCg_DrCVNeDhizmId2EV1gARVlj?e=EYyXcm)
 </div>
 
-## Development Environment
-The application is a C# .NET project with a Windows UI Library (WinUI) 3 user interface (UI), created using Visual Studio.
+Okay, I can help you make your content more concise and specific. Here is a revised version of your features heading in markdown:
+
+## Features of KCT-BSGW Translation Utility
+
+- **Modern and intuitive user interface** The application uses WinUI 3, the latest Windows UI library, to provide a smooth and responsive user experience.
+- **Powerful and accurate text and document translation** The application leverages Microsoft Azure Translate, a cloud-based AI service, to enable translation across more than 100 languages. The application also allows customization of translations to reflect domain-specific terminology and style.
+- **Efficient and scalable data management** The application uses Azure SQL Database, a fully managed relational database-as-a-service, to store and access translation data with ease, security, and performance. The application also benefits from Azure SQL Database's intelligent features, such as automatic tuning, cost optimization, and data residency.
+- **Innovative and industry-oriented solution** The application creates a database that covers translations for most Automotive Aftermath Manuals and implements it in the industry as a web application hosted on Microsoft Azure. This enables faster and easier access to multilingual information for automotive professionals and customers.
+- **Versatile and adaptable project** The application can be repurposed to use in many other use cases that require text and document translation, such as education, tourism, media, and entertainment. For example, the application can be used to translate course materials, travel guides, news articles, and subtitles.
 
 ### Prerequisites
 - [Visual Studio Community 2022](https://visualstudio.microsoft.com/downloads/?cid=learn-onpage-download-cta) (recommended) or Visual Studio 2019.
@@ -23,10 +30,10 @@ The application is a C# .NET project with a Windows UI Library (WinUI) 3 user in
 winget install "Visual Studio Community 2022"  --override "--add Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cs" -s msstore
 ```
 
-### 1. Install Release Package ( placeholder api key - translation won't work )
+## Try it Out ( placeholder api key - translation won't work )
 
 
-### 2. Build and Debug
+## Build from Source
 1. Clone the repository using
 ```
 git clone https://github.com/KarthiDreamr/MultiFile_AzureTranslate_WindowsApp.git
